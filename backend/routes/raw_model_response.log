@@ -1,8 +1,1 @@
-```json
-{
-  "disease": "Pneumonia",
-  "criticality": "High",
-  "remedy": "Azithromycin 500mg 1-0-1",
-  "rest": "7 days"
-}
-```
+{"disease": "Pneumonia", "criticality": "High", "remedy": "Paracetamol 500mg 1-0-1, Ibuprofen 400mg 1-0-1", "rest": "3-5 days"}

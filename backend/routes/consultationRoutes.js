@@ -19,7 +19,7 @@ router.post('/predict', async (req, res) => {
         },) //{ timeout: 3000 }); // 3 second timeout
 
         disease = flaskResponse.data.disease;
-        criticality = flaskResponse.data.criticality;
+        criticality = flaskResponse.data.criticality.toUpperCase();
         medicines = flaskResponse.data.medicines;
         symptomsArray = symptoms.split(',').map(s => s.trim());
 
