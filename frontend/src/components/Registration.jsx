@@ -35,7 +35,7 @@ const Registration = () => {
             const res = await api.post('/api/patients', formData);
             // Auto login/select
             localStorage.setItem('currentPatient', JSON.stringify(res.data));
-            navigate('/consultation');
+            navigate('/dashboard');
         } catch (err) {
             setError("Registration failed. Try again.");
             console.error(err);

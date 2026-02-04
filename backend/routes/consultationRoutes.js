@@ -16,7 +16,7 @@ router.post('/predict', async (req, res) => {
         // 1. Try calling the Flask AI Service
         const flaskResponse = await axios.post('http://127.0.0.1:5001/predict_ai', {
             symptoms: symptoms
-        }, { timeout: 3000 }); // 3 second timeout
+        },) //{ timeout: 3000 }); // 3 second timeout
 
         disease = flaskResponse.data.disease;
         criticality = flaskResponse.data.criticality;
@@ -84,4 +84,29 @@ router.post('/predict', async (req, res) => {
         res.status(500).json({ error: "Failed to save consultation: " + err.message });
     }
 });
+
+// Get all consultations for a patient
+router.get('/patient/:patient_id', async (req, res) => {
+    const { patient_id } = req.params;
+
+    if (!supabase) {
+        return res.status(503).json({ error: 'Database service unavailable' });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('consultations')
+            .select('*')
+            .eq('patient_id', patient_id)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

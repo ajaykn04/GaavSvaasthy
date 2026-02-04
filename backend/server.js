@@ -16,9 +16,9 @@ const doctorRoutes = require('./routes/doctorRoutes');
 app.use(cors());
 app.use(express.json());
 
-console.log('Patient Routes:', patientRoutes);
-console.log('Consultation Routes:', consultationRoutes);
-console.log('Appointment Routes:', appointmentRoutes);
+// console.log('Patient Routes:', patientRoutes);
+// console.log('Consultation Routes:', consultationRoutes);
+// console.log('Appointment Routes:', appointmentRoutes);
 
 app.use('/api/patients', patientRoutes);
 app.use('/api/consultation', consultationRoutes);

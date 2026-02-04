@@ -20,7 +20,7 @@ def predict_ai():
         except json.JSONDecodeError:
             # If the output isn't valid JSON, return it as a raw result
             prediction = {"raw_response": prediction_str}
-            
+        print(f"Prediction: {prediction}")
         return jsonify(prediction)
     except Exception as e:
         print(f"FLASK ERROR: {str(e)}")

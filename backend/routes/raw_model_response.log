@@ -1,8 +1,8 @@
 ```json
 {
-  "disease": "Pneumonia",
-  "criticality": "High",
-  "remedy": "Azithromycin 500mg 1-0-1",
-  "rest": "7 days"
+  "disease": "Viral Infection (e.g., Flu or Cold)",
+  "criticality": "Low",
+  "remedy": "Acetaminophen 500mg 1-0-1, Ibuprofen 400mg 1-0-1",
+  "rest": "3 days"
 }
 ```

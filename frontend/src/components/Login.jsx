@@ -39,7 +39,7 @@ const Login = () => {
 
   const selectUser = (user) => {
     localStorage.setItem("currentPatient", JSON.stringify(user));
-    navigate("/consultation");
+    navigate("/dashboard");
   };
 
   const goToRegister = () => {

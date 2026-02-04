@@ -112,7 +112,7 @@ def analyze_symptoms(symptoms_text, stream=False):
             except json.JSONDecodeError:
                 # Fallback if JSON parsing fails, return raw string (caller handles error)
                 pass
-
+        print(f"Raw response text: {response_text}")
         return response_text
 
     except Exception as e:
