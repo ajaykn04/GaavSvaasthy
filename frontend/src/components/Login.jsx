@@ -1,84 +1,91 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography, Card, CardActionArea, CardContent, Grid } from "@mui/material";
+import { Box, Button, TextField, Typography, Card, CardActionArea, CardContent, Grid, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-const MOCK_DATA = {
-  "9876543210": [
-    { id: "P1", username: "Rajesh Singh", age: 45, place: "Nabha", admin: false },
-    { id: "P2", username: "Sunita Kaur", age: 40, place: "Nabha", admin: false }
-  ],
-  "admin": [
-    { id: "A1", username: "Hospital Staff", admin: true, place: "Civil Hospital" }
-  ]
-};
+import api from "../api/axios";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [patients, setPatients] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handlePhoneSubmit = () => {
+  const handlePhoneSubmit = async () => {
     if (!phone) {
       setError("Please enter a phone number");
       return;
     }
-    const foundUsers = MOCK_DATA[phone];
-    if (foundUsers) {
-      setPatients(foundUsers);
-      setStep(2);
-      setError("");
-    } else {
-      setError("Number not found. Try '9876543210' or 'admin'");
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await api.get(`/api/patients/search/${phone}`);
+      // res.data is expected to be an array of patients
+      if (res.data && res.data.length > 0) {
+        setPatients(res.data);
+        setStep(2);
+      } else {
+        setError("Number not found.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Connection error or server unavailable.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const selectUser = (user) => {
-    localStorage.setItem("userData", JSON.stringify(user));
-    user.admin ? navigate("/admindash") : navigate("/userdash");
+    localStorage.setItem("currentPatient", JSON.stringify(user));
+    navigate("/consultation");
+  };
+
+  const goToRegister = () => {
+    navigate("/register", { state: { mobile: phone } });
   };
 
   return (
-    <Box sx={{ 
-      display: "flex", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      width: "100vw",  
-      height: "100vh", 
-      bgcolor: "#e8f5e9", 
-      overflow: "hidden" 
+    <Box sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100vw",
+      height: "100vh",
+      bgcolor: "#e8f5e9",
+      overflow: "hidden"
     }}>
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           // Responsive Aspect Ratio Sizing
           width: {
-            xs: "min(95vw, (9/16) * 95vh)", 
-            md: "min(95vw, (16/9) * 95vh)"  
+            xs: "min(95vw, (9/16) * 95vh)",
+            md: "min(95vw, (16/9) * 95vh)"
           },
           height: {
-            xs: "min(95vh, (16/9) * 95vw)", 
-            md: "min(95vh, (9/16) * 95vw)"  
+            xs: "min(95vh, (16/9) * 95vw)",
+            md: "min(95vh, (9/16) * 95vw)"
           },
-          
+
           // Centering content inside the card
           display: "flex",
           flexDirection: "column",
           justifyContent: "center", // Vertical center
           alignItems: "center",     // Horizontal center
           textAlign: "center",
-          
-          p: { xs: 2, md: 4 }, 
-          bgcolor: "white", 
-          boxShadow: "0px 10px 40px rgba(0,0,0,0.15)", 
+
+          p: { xs: 2, md: 4 },
+          bgcolor: "white",
+          boxShadow: "0px 10px 40px rgba(0,0,0,0.15)",
           borderRadius: 4,
         }}
       >
-        <Typography variant="h3" sx={{ 
-          mb: 1, 
-          fontWeight: "900", 
-          color: "#2e7d32", 
-          fontSize: { xs: "2rem", md: "3.5rem" } 
+        <Typography variant="h3" sx={{
+          mb: 1,
+          fontWeight: "900",
+          color: "#2e7d32",
+          fontSize: { xs: "2rem", md: "3.5rem" }
         }}>
           GaavSwaasthy
         </Typography>
@@ -96,15 +103,29 @@ const Login = () => {
               error={!!error}
               helperText={error}
               sx={{ mb: 3 }}
+              disabled={loading}
             />
+            {error === "Number not found." && (
+              <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                size="large"
+                sx={{ mb: 2, py: 1.5, fontWeight: "bold" }}
+                onClick={goToRegister}
+              >
+                Register New Member
+              </Button>
+            )}
             <Button
               fullWidth
               variant="contained"
               size="large"
               sx={{ bgcolor: "#2e7d32", py: 2, fontWeight: "bold", "&:hover": { bgcolor: "#1b5e20" } }}
               onClick={handlePhoneSubmit}
+              disabled={loading}
             >
-              Access Records
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Access Records"}
             </Button>
           </Box>
         ) : (
@@ -115,18 +136,24 @@ const Login = () => {
             <Grid container spacing={2} justifyContent="center">
               {patients.map((p) => (
                 <Grid item xs={12} sm={6} key={p.id}>
-                  <Card variant="outlined" sx={{ borderRadius: 3 }}>
+                  <Card variant="outlined" sx={{ borderRadius: 3, borderColor: "#2e7d32" }}>
                     <CardActionArea onClick={() => selectUser(p)} sx={{ p: 1 }}>
                       <CardContent>
                         <Typography variant="h6" color="#2e7d32">{p.username}</Typography>
-                        <Typography variant="body2">{p.place} • {p.age} Yrs</Typography>
+                        <Typography variant="body2">{p.age} Yrs</Typography>
                       </CardContent>
                     </CardActionArea>
                   </Card>
                 </Grid>
               ))}
             </Grid>
-            <Button onClick={() => setStep(1)} sx={{ mt: 2, color: "#2e7d32", textTransform: "none" }}>
+            <Button
+              onClick={goToRegister}
+              fullWidth sx={{ mt: 2, mb: 1, textTransform: "none", color: "#1b5e20", bgcolor: "#e8f5e9" }}
+            >
+              + Add Another Member
+            </Button>
+            <Button onClick={() => { setStep(1); setPatients([]); setError(""); }} sx={{ mt: 1, color: "text.secondary", textTransform: "none" }}>
               ← Switch Number
             </Button>
           </Box>

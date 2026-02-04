@@ -1,21 +1,24 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
-import Dashboard from './components/Dashboard'
+import Registration from './components/Registration'
+import UserDashboard from './components/UserDashboard'
+import AppointmentBooking from './components/AppointmentBooking'
+import TestBackend from './components/TestBackend'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/consultation" element={<UserDashboard />} />
+          <Route path="/appointment" element={<AppointmentBooking />} />
+          <Route path="/test" element={<TestBackend />} />
+        </Routes>
       </BrowserRouter>
     </>
   )
