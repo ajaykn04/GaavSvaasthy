@@ -82,8 +82,8 @@ def analyze_symptoms(symptoms_text, stream=False):
         )
         response_text = response.text
         # Log the raw model response for examination
-        with open("raw_model_response.log", "w") as f:
-            f.write(response_text)
+        # with open("raw_model_response.log", "w") as f:
+        #     f.write(response_text)
 
         # Extract JSON from the response
         import re

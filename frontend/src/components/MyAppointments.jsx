@@ -65,9 +65,14 @@ const MyAppointments = () => {
                                 <Card sx={{ borderRadius: 2 }}>
                                     <CardContent>
                                         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', mb: 2 }}>
-                                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: { xs: 1, sm: 0 } }}>
-                                                <CalendarTodayIcon color="action" />
-                                                <Typography variant="h6">{new Date(apt.appointment_date).toDateString()}</Typography>
+                                            <Box>
+                                                <Typography variant="h6" color="#e65100" fontWeight="bold">
+                                                    Token: {apt.token_no || "#"}
+                                                </Typography>
+                                                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
+                                                    <CalendarTodayIcon color="action" />
+                                                    <Typography variant="body1">{new Date(apt.appointment_date).toDateString()}</Typography>
+                                                </Box>
                                             </Box>
                                             <Chip label={apt.status} color={apt.status === 'CONFIRMED' ? 'success' : 'default'} />
                                         </Box>

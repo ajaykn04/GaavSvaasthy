@@ -30,6 +30,18 @@ router.post('/', async (req, res) => {
             return res.status(409).json({ error: 'This slot is no longer available' });
         }
 
+        // Generate Token Number
+        // Count existing appointments for this doctor on this date
+        const { count, error: countError } = await supabase
+            .from('appointments')
+            .select('*', { count: 'exact', head: true })
+            .eq('doctor_id', doctor_id)
+            .eq('appointment_date', appointment_date);
+
+        if (countError) throw countError;
+
+        const tokenNo = count + 1;
+
         // Create appointment
         const { data, error } = await supabase
             .from('appointments')
@@ -40,7 +52,8 @@ router.post('/', async (req, res) => {
                 appointment_date,
                 slot_start,
                 slot_end,
-                status: 'BOOKED'
+                status: 'BOOKED',
+                token_no: tokenNo
             }])
             .select(`
                 *,

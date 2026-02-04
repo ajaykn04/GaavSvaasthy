@@ -207,6 +207,21 @@ const Consultation = () => {
                                 </Box>
                             </Box>
 
+                            {/* Prescribed Medicines Section */}
+                            {result.prescribed_medicines && (
+                                <Box sx={{ mt: 2, mb: 2, p: 2, bgcolor: "#fff", borderRadius: 2, border: "1px solid #e0e0e0" }}>
+                                    <Typography variant="h6" color="#2e7d32" sx={{ mb: 1, fontWeight: "bold" }}>
+                                        Prescribed Remedy
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mb: 1 }}>
+                                        <strong>Medicines:</strong> {result.medicines || "None"}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        <strong>Rest/Advice:</strong> {result.prescribed_medicines.rest || "As advised"}
+                                    </Typography>
+                                </Box>
+                            )}
+
                             <Box sx={{ mt: 3, p: 2, bgcolor: result.risk_factor === "HIGH" ? "#ffebee" : "#e8f5e9", borderRadius: 2 }}>
                                 <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>Recommended Action</Typography>
                                 {result.risk_factor === "HIGH" ? (

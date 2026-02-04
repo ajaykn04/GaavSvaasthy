@@ -10,17 +10,18 @@ router.post('/predict', async (req, res) => {
         return res.status(400).json({ error: 'patient_info_id is required' });
     }
 
-    let disease, criticality, medicines, symptomsArray;
+    let disease, criticality, medicines, rest, symptomsArray;
 
     try {
         // 1. Try calling the Flask AI Service
         const flaskResponse = await axios.post('http://127.0.0.1:5001/predict_ai', {
             symptoms: symptoms
-        },) //{ timeout: 3000 }); // 3 second timeout
+        }, )//{ timeout: 3000 }); // 3 second timeout
 
         disease = flaskResponse.data.disease;
         criticality = flaskResponse.data.criticality.toUpperCase();
-        medicines = flaskResponse.data.medicines;
+        medicines = flaskResponse.data.remedy; // Using 'remedy' from AI response
+        rest = flaskResponse.data.rest;
         symptomsArray = symptoms.split(',').map(s => s.trim());
 
     } catch (flaskError) {
@@ -38,12 +39,19 @@ router.post('/predict', async (req, res) => {
             criticality === 'MEDIUM' ? 'Possible Infection or Inflammation' :
                 'Mild Symptoms';
 
-        medicines = criticality === 'LOW' ? ['Rest', 'Hydration', 'Monitor symptoms'] : ['Consult doctor immediately'];
+        medicines = criticality === 'LOW' ? 'Rest, Hydration, Monitor symptoms' : 'Consult doctor immediately';
+        rest = 'As advised';
         symptomsArray = symptoms.split(',').map(s => s.trim());
     }
 
     try {
         const needsAppointment = criticality === 'HIGH';
+
+        // Prepare prescribed medicines JSON
+        const prescribedMeds = {
+            medicines: medicines,
+            rest: rest
+        };
 
         // Save to Supabase
         const { data: consultationData, error: consultError } = await supabase
@@ -53,7 +61,8 @@ router.post('/predict', async (req, res) => {
                 symptoms: symptomsArray,
                 predicted_disease: disease,
                 risk_factor: criticality,
-                doctor_consultation: needsAppointment
+                doctor_consultation: needsAppointment,
+                prescribed_medicines: prescribedMeds
             }])
             .select();
 

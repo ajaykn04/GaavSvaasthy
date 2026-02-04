@@ -15,6 +15,7 @@ const AppointmentBooking = () => {
     const [availableDoctors, setAvailableDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [selectedSlot, setSelectedSlot] = useState(null);
+    const [appointmentDetails, setAppointmentDetails] = useState(null);
     const [loading, setLoading] = useState(false);
     const [booking, setBooking] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
@@ -70,6 +71,7 @@ const AppointmentBooking = () => {
                 slot_start: selectedSlot.start,
                 slot_end: selectedSlot.end
             });
+            setAppointmentDetails(res.data);
             setConfirmed(true);
         } catch (err) {
             console.error(err);
@@ -108,6 +110,9 @@ const AppointmentBooking = () => {
                         Your appointment with <strong>{selectedDoctor.doctor_name}</strong> has been successfully booked.
                     </Typography>
                     <Box sx={{ bgcolor: '#f1f8e9', p: 2, borderRadius: 2, mb: 3 }}>
+                        <Typography variant="h5" color="secondary" sx={{ mb: 2, fontWeight: 'bold', color: '#e65100' }}>
+                            Token Number: {appointmentDetails?.token_no}
+                        </Typography>
                         <Typography><strong>Date:</strong> {new Date(selectedDate).toLocaleDateString()}</Typography>
                         <Typography><strong>Time:</strong> {selectedSlot.start} - {selectedSlot.end}</Typography>
                         <Typography><strong>Specialization:</strong> {selectedDoctor.specialization}</Typography>
