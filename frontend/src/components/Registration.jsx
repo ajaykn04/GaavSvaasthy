@@ -52,7 +52,8 @@ const Registration = () => {
             width: "100vw",
             height: "100vh",
             bgcolor: "#e8f5e9",
-            overflow: "hidden"
+            overflow: "hidden",m: 0,
+    p: 0,ml:-15,mt:-4,mb:-4
         }}>
             <Box
                 sx={{

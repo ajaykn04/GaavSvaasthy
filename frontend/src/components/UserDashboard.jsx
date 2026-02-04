@@ -51,7 +51,16 @@ const UserDashboard = () => {
     ];
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+        <Box
+  sx={{
+    width: "100vw",
+    minHeight: "100vh",
+    bgcolor: "#f5f5f5",
+    m: 0,
+    p: 0,ml:-15,mt:-4,mb:-4
+  }}
+>
+
             {/* Header */}
             <Box sx={{
                 bgcolor: "#2e7d32",
