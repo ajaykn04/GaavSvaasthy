@@ -57,7 +57,7 @@ const UserDashboard = () => {
     minHeight: "100vh",
     bgcolor: "#f5f5f5",
     m: 0,
-    p: 0,ml:-15,mt:-4,mb:-4
+    p: 0,ml:-5,mt:-4,mb:-4
   }}
 >
 
@@ -95,7 +95,7 @@ const UserDashboard = () => {
                     Manage your health and consultations
                 </Typography>
 
-                <Grid container spacing={3}>
+                <Grid container spacing={3} justifyContent="center">
                     {cards.map((card, index) => (
                         <Grid item xs={12} sm={4} key={index}>
                             <Card
