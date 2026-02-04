@@ -1,82 +1,53 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
+const axios = require('axios'); // Install this: npm install axios
 
-// Mock AI Logic for Risk Prediction
-const analyzeRisk = (symptoms) => {
-    const highRiskKeywords = ['chest pain', 'breathing', 'severe', 'blood', 'unconscious', 'heart'];
-    const mediumRiskKeywords = ['fever', 'vomiting', 'pain', 'infection'];
-
-    const lowerSymptoms = symptoms.toLowerCase();
-
-    const isHigh = highRiskKeywords.some(word => lowerSymptoms.includes(word));
-    if (isHigh) return 'HIGH';
-
-    const isMedium = mediumRiskKeywords.some(word => lowerSymptoms.includes(word));
-    if (isMedium) return 'MEDIUM';
-
-    return 'LOW';
-};
-
-// Predict Disease & Risk with Health Metrics Collection
 router.post('/predict', async (req, res) => {
     const { user_id, symptoms, weight, height, pressure } = req.body;
 
-    if (!supabase) {
-        // Fallback for demo without DB connection
-        const risk = analyzeRisk(symptoms || '');
-        return res.json({
-            risk_factor: risk,
-            predicted_disease: 'Analysis (Offline Mode)',
-            message: 'Database unavailable, result is simulation.'
-        });
-    }
-
     try {
-        const riskLevel = analyzeRisk(symptoms);
-        let predictedDisease = '';
+        // 1. Call the Flask AI Service
+        const flaskResponse = await axios.post('http://127.0.0.1:5001/predict_ai', {
+            symptoms: symptoms
+        });
 
-        switch (riskLevel) {
-            case 'HIGH': predictedDisease = 'Potential Critical Condition - Immediate Care Required'; break;
-            case 'MEDIUM': predictedDisease = 'Viral/Bacterial Infection - Medical Attention Recommended'; break;
-            default: predictedDisease = 'Mild Symptoms - Rest and Hydration recommended'; break;
-        }
+        const { disease, criticality, medicines } = flaskResponse.data;
 
-        // Convert symptoms string to JSON array format
+        // 2. Prepare logic for database
         const symptomsArray = symptoms.split(',').map(s => s.trim());
+        const needsAppointment = criticality === 'HIGH';
 
-        // Save consultation record
+        // 3. Save to Supabase
         const { data: consultationData, error: consultError } = await supabase
             .from('consultations')
             .insert([{
-                id: user_id,  // FK to users.id
+                id: user_id,
                 symptoms: symptomsArray,
-                predicted_disease: predictedDisease,
-                risk_factor: riskLevel,
-                doctor_consulatation: riskLevel === 'HIGH' ? 'True' : 'False'
+                predicted_disease: disease,
+                risk_factor: criticality,
+                doctor_consulatation: needsAppointment ? 'True' : 'False',
+                prescribed_meds: medicines // Ensure this column exists in Supabase
             }])
             .select();
 
         if (consultError) throw consultError;
 
-        // Update patient_info with health metrics if provided
+        // 4. Update health metrics
         if (weight || height || pressure) {
-            const { error: updateError } = await supabase
-                .from('patient_info')
-                .update({
-                    weight: weight || null,
-                    height: height || null,
-                    pressure: pressure || null
-                })
-                .eq('user_id', user_id);
-
-            if (updateError) console.error('Failed to update patient_info:', updateError);
+            await supabase.from('patient_info').update({ weight, height, pressure }).eq('user_id', user_id);
         }
 
-        res.json(consultationData[0]);
+        // 5. Send combined response to React
+        res.json({
+            ...consultationData[0],
+            action: needsAppointment ? 'RE-ROUTE_TO_APPOINTMENT' : 'SHOW_MEDICINES',
+            medicines: medicines
+        });
+
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("AI Service Error:", err.message);
+        res.status(500).json({ error: "Failed to process AI prediction" });
     }
 });
-
 module.exports = router;
