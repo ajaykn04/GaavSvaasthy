@@ -98,6 +98,7 @@ const AppointmentBooking = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 minHeight: "100vh",
+                minWidth:" 100vw",ml:-5,mt:-4,
                 bgcolor: "#e8f5e9",
                 p: 2
             }}>
@@ -133,6 +134,7 @@ const AppointmentBooking = () => {
     return (
         <Box sx={{
             minHeight: "100vh",
+            minWidth:  "100vw",ml:-5,mt:-4,
             bgcolor: "#f5f5f5",
             p: 3
         }}>

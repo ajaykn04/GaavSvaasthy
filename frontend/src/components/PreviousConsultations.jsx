@@ -40,7 +40,8 @@ const PreviousConsultations = () => {
     }, [navigate]);
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+        <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" ,
+      width: "100vw",ml:-5,mt:-4}}>
             <Box sx={{ bgcolor: "#2e7d32", color: "white", p: 2, display: "flex", alignItems: "center", gap: 1 }}>
                 <IconButton color="inherit" onClick={() => navigate("/dashboard")}>
                     <ArrowBackIcon />

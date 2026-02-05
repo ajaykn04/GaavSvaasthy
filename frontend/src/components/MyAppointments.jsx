@@ -41,7 +41,7 @@ const MyAppointments = () => {
     }, [navigate]);
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+        <Box sx={{ minHeight: "100vh",width:"100vw",ml:-5,mt:-4, bgcolor: "#f5f5f5" }}>
             <Box sx={{ bgcolor: "#F57C00", color: "white", p: 2, display: "flex", alignItems: "center", gap: 1 }}>
                 <IconButton color="inherit" onClick={() => navigate("/dashboard")}>
                     <ArrowBackIcon />

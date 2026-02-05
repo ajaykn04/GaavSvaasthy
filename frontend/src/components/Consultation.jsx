@@ -93,7 +93,9 @@ const Consultation = () => {
     if (!patient) return null;
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+        <Box sx={{ 
+      width: "100vw",
+      height: "100vh",ml:-6,mt:-5, bgcolor: "#f5f5f5" }}>
             {/* Header */}
             <Box sx={{
                 bgcolor: "#2e7d32",
@@ -102,7 +104,7 @@ const Consultation = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                boxShadow: 2
+                boxShadow: 2,
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <IconButton color="inherit" onClick={goBack}>
