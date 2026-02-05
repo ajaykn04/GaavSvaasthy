@@ -97,3 +97,51 @@ router.get('/patient/:patient_id', async (req, res) => {
 });
 
 module.exports = router;
+
+// Get appointments for a doctor
+router.get('/doctor/:doctor_id', async (req, res) => {
+    const { doctor_id } = req.params;
+    const { date } = req.query; // Optional: filter by date, default to today if needed or all
+
+    if (!supabase) {
+        return res.status(503).json({ error: 'Database service unavailable' });
+    }
+
+    try {
+        let query = supabase
+            .from('appointments')
+            .select(`
+                *,
+                patient_info (
+                    id,
+                    users (
+                        username,
+                        age,
+                        phone_number,
+                        address
+                    )
+                ),
+                consultations (
+                    symptoms,
+                    predicted_disease,
+                    prescribed_medicines
+                )
+            `)
+            .eq('doctor_id', doctor_id)
+            .order('appointment_date', { ascending: true })
+            .order('slot_start', { ascending: true });
+
+        if (date) {
+            query = query.eq('appointment_date', date);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});

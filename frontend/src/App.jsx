@@ -9,6 +9,8 @@ import PreviousConsultations from './components/PreviousConsultations'
 import MyAppointments from './components/MyAppointments'
 import AppointmentBooking from './components/AppointmentBooking'
 import TestBackend from './components/TestBackend'
+import DoctorLogin from './components/DoctorLogin'
+import DoctorDashboard from './components/DoctorDashboard'
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/my-appointments" element={<MyAppointments />} />
           <Route path="/appointment" element={<AppointmentBooking />} />
           <Route path="/test" element={<TestBackend />} />
+          <Route path="/doctor/login" element={<DoctorLogin />} />
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
         </Routes>
       </BrowserRouter>
     </>

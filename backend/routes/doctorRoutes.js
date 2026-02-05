@@ -2,6 +2,41 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
 
+// Doctor Login
+router.post('/login', async (req, res) => {
+    const { phone } = req.body;
+
+    if (!supabase) {
+        return res.status(503).json({ error: 'Database service unavailable' });
+    }
+
+    if (!phone) {
+        return res.status(400).json({ error: 'Phone number is required' });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('doctors')
+            .select('*')
+            .eq('phone', phone)
+            .single();
+
+        if (error || !data) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        if (!data.active) {
+            return res.status(403).json({ error: 'Doctor account is inactive' });
+        }
+
+        res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 // Get available doctors with their slots for a specific date
 router.get('/available', async (req, res) => {
     const { date } = req.query; // Expected format: YYYY-MM-DD
