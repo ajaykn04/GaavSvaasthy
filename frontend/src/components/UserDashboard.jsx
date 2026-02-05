@@ -122,6 +122,14 @@ const UserDashboard = () => {
                         </Grid>
                     ))}
                 </Grid>
+                <img
+  src="https://developers.google.com/static/admob/images/ios/small_template.png"
+  alt="Demo"
+  width="80%"
+  height="80%"
+  style={{marginTop:"5vh"}}
+/>
+
             </Box>
         </Box>
     );

@@ -45,6 +45,8 @@ const DoctorLogin = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100vh",
+                width:"100vw",
+                ml:-4,mt:-4,
                 bgcolor: "#e3f2fd", // Light blue background for doctors
                 p: 2
             }}

@@ -57,7 +57,7 @@ const DoctorDashboard = () => {
     if (!doctor) return null;
 
     return (
-        <Box sx={{ flexGrow: 1, minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+        <Box sx={{ flexGrow: 1, minHeight: "100vh",minWidth:"100vw",ml:-4,mt:-4, bgcolor: "#f5f5f5" }}>
             <AppBar position="static" sx={{ bgcolor: "#1565c0" }}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
